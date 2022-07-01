@@ -20,10 +20,9 @@ import com.zhang.autotouch.utils.WindowUtils;
 /**
  * 悬浮窗
  */
-public class FloatingService extends Service {
+public class SwitchFloatingService extends Service {
     private WindowManager mWindowManager;
     private View mFloatingView;
-    private MenuDialog menuDialog;
     private WindowManager.LayoutParams floatLayoutParams;
 
     @Override
@@ -80,7 +79,7 @@ public class FloatingService extends Service {
                         break;
                     case MotionEvent.ACTION_UP:
                         if (!isMoving) {
-                            onShowSelectDialog();
+//                            onShowSelectDialog();
                             return true;
                         }
                         break;
@@ -90,38 +89,11 @@ public class FloatingService extends Service {
         });
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void onShowSelectDialog() {
-        //弹出菜单弹窗
-        hideDialog(menuDialog);
-        if (menuDialog == null) {
-            menuDialog = new MenuDialog(this);
-            menuDialog.setListener(new MenuDialog.Listener() {
-                @Override
-                public void onFloatWindowAttachChange(boolean attach) {
-                    if (attach) {
-                        addViewToWindow(mFloatingView, floatLayoutParams);
-                    } else {
-                        // 暂停
-                        TouchEvent.postContinueAction();
-                        removeViewFromWinddow(mFloatingView);
-                    }
-                }
-
-                @Override
-                public void onExitService() {
-                    stopSelf();
-                }
-            });
-        }
-        menuDialog.show();
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         removeViewFromWinddow(mFloatingView);
-        hideDialog(menuDialog);
     }
 
     private void hideDialog(Dialog dialog) {
@@ -146,3 +118,4 @@ public class FloatingService extends Service {
         return (T) LayoutInflater.from(this).inflate(layout, null);
     }
 }
+

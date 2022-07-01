@@ -4,9 +4,9 @@ public class TouchPoint {
     private String name;
     private int x;
     private int y;
-    private int delay;
+    private double delay;
 
-    public TouchPoint(String name, int x, int y, int delay) {
+    public TouchPoint(String name, int x, int y, double delay) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -25,7 +25,7 @@ public class TouchPoint {
         return y;
     }
 
-    public int getDelay() {
+    public double getDelay() {
         return delay;
     }
 }
