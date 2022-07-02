@@ -78,7 +78,7 @@
         android:background="#666"
         android:id="@+id/bt_test"
         android:textSize="15sp"
-        android:text="测试多点击"
+        android:text="添加脚本"
         android:layout_width="100dp"
         android:layout_height="50dp" />
 

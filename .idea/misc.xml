@@ -15,8 +15,18 @@
         <entry key="..\:/Code/Android/AutoTouch/app/src/main/res/layout/item_touch_point.xml" value="0.25729166666666664" />
         <entry key="..\:/Code/Android/AutoTouch/app/src/main/res/layout/layout_window.xml" value="0.25729166666666664" />
         <entry key="..\:/Code/Android/AutoTouch/app/src/main/res/layout/window_touch_point.xml" value="0.25729166666666664" />
-        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/layout_switch.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/dialog_add_point.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/dialog_menu.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/dialog_record.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/home_page.xml" value="0.1" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/item_touch_point.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/item_touch_point2.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/item_touch_point3.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/layout_switch.xml" value="0.1" />
         <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/layout_window.xml" value="0.25729166666666664" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/script_page.xml" value="0.20168066580377575" />
+        <entry key="..\:/Code/Android/MyAutoTouch/app/src/main/res/layout/window_touch_point.xml" value="0.25729166666666664" />
       </map>
     </option>
   </component>
