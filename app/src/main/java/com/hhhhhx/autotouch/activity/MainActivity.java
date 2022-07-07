@@ -1,13 +1,22 @@
 package com.hhhhhx.autotouch.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PixelFormat;
+import android.hardware.display.DisplayManager;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +25,7 @@ import com.hhhhhx.autotouch.R;
 import com.hhhhhx.autotouch.fw_permission.FloatWinPermissionCompat;
 import com.hhhhhx.autotouch.service.AutoTouchService;
 import com.hhhhhx.autotouch.service.FloatingService;
+import com.hhhhhx.autotouch.service.SwitchFloatingService;
 import com.hhhhhx.autotouch.utils.AccessibilityUtil;
 import com.hhhhhx.autotouch.utils.ToastUtil;
 
@@ -31,14 +41,18 @@ public class MainActivity extends AppCompatActivity {
 
     private Button homeBtn;
 
+    // 截屏
+    private static final int REQUEST_MEDIA_PROJECTION = 1;
+    private MediaProjectionManager mMediaProjectionManager;
+    private MediaProjection mMediaProjection;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
         tvStart = findViewById(R.id.tv_start);
         tvStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                         ToastUtil.show(getString(R.string.app_name) + "已启用");
                         startService(new Intent(MainActivity.this, FloatingService.class));
                         startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                        startService(new Intent(MainActivity.this, SwitchFloatingService.class));
 //                        moveTaskToBack(true);
                         break;
                     case STRING_ALERT:
@@ -70,12 +85,45 @@ public class MainActivity extends AppCompatActivity {
 
 
         ToastUtil.init(this);
+
+        mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        if (mMediaProjectionManager != null) {
+            startActivityForResult(mMediaProjectionManager.createScreenCaptureIntent(), REQUEST_MEDIA_PROJECTION);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkState();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MEDIA_PROJECTION) {
+            if (resultCode != Activity.RESULT_OK) {
+                Log.d(TAG, "User cancelled");
+                Toast.makeText(this, "User cancelled!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Log.d(TAG, "Starting screen capture");
+            mMediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, data);
+            setUpVirtualDisplay();
+        }
+    }
+    private void setUpVirtualDisplay() {
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+        @SuppressLint("WrongConstant")
+        final ImageReader imageReader = ImageReader.newInstance(dm.widthPixels, dm.heightPixels, PixelFormat.RGBA_8888, 1);
+        mMediaProjection.createVirtualDisplay(
+                "ScreenCapture",
+                dm.widthPixels, dm.heightPixels,
+                dm.densityDpi,
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+                imageReader.getSurface(), null, null);
+        GBData.reader = imageReader;
     }
 
     // 权限判断
@@ -129,5 +177,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("取消", null).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopService(new Intent(this,FloatingService.class));
+        stopService(new Intent(this,AutoTouchService.class));
+        stopService(new Intent(this, SwitchFloatingService.class));
     }
 }

@@ -15,11 +15,9 @@ import androidx.constraintlayout.widget.Group;
 
 import com.hhhhhx.autotouch.R;
 import com.hhhhhx.autotouch.activity.ItemActivity;
-import com.hhhhhx.autotouch.bean.ItemEvent;
+import com.hhhhhx.autotouch.event.ItemEvent;
 import com.hhhhhx.autotouch.bean.TouchPoint;
 import com.hhhhhx.autotouch.utils.ToastUtil;
-
-import java.util.ArrayList;
 
 public class AddPointDialog extends BaseServiceDialog implements View.OnClickListener {
 

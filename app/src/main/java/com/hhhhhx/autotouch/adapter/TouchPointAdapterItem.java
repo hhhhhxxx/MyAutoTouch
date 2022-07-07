@@ -1,7 +1,6 @@
 package com.hhhhhx.autotouch.adapter;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hhhhhx.autotouch.R;
-import com.hhhhhx.autotouch.bean.ItemEvent;
+import com.hhhhhx.autotouch.event.ItemEvent;
 import com.hhhhhx.autotouch.bean.TouchPoint;
-import com.hhhhhx.autotouch.utils.SpUtils;
 
 import java.util.List;
 

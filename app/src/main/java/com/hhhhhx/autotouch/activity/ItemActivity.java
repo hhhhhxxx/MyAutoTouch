@@ -12,13 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hhhhhx.autotouch.R;
 import com.hhhhhx.autotouch.adapter.TouchPointAdapterItem;
-import com.hhhhhx.autotouch.bean.ItemEvent;
-import com.hhhhhx.autotouch.bean.TouchEvent;
+import com.hhhhhx.autotouch.event.ItemEvent;
+import com.hhhhhx.autotouch.event.TouchEvent;
 import com.hhhhhx.autotouch.bean.TouchPoint;
 import com.hhhhhx.autotouch.dialog.AddPointDialog;
-import com.hhhhhx.autotouch.dialog.MenuDialog;
-import com.hhhhhx.autotouch.utils.GsonUtils;
 import com.hhhhhx.autotouch.utils.SpUtils;
+import com.hhhhhx.autotouch.utils.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -70,7 +69,9 @@ public class ItemActivity extends Activity {
         findViewById(R.id.saveBtn).setOnClickListener(view -> {
             if(listIndex >=0) {
                 SpUtils.setTouchPointsList(getApplicationContext(),touchPointList,listIndex);
+                ToastUtil.show("保存成功");
             } else {
+                ToastUtil.show("保存成功");
                 Log.d(TAG, "saveBtn: 保存失败");
             }
             finish();
@@ -90,7 +91,6 @@ public class ItemActivity extends Activity {
         TouchEvent.postPauseAction();
         Intent intent = getIntent();
 
-        Log.d(TAG, "获取之前: "+ GsonUtils.beanToJson(touchPointList));
 
         listIndex = intent.getIntExtra("listIndex",-1);
         
@@ -102,10 +102,8 @@ public class ItemActivity extends Activity {
             touchPointAdapter.setTouchPointListList(touchPointList);
         } else {
             finish();
-            Log.d(TAG, "onStart: touchList内存丢失");
+            Log.d(TAG, "onStart: touchList内存丢失,页面关闭");
         }
-
-        Log.d(TAG, "获取之后: "+ GsonUtils.beanToJson(touchPointList));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -131,8 +129,10 @@ public class ItemActivity extends Activity {
         }
     }
     private void addItemInTouchPointList(TouchPoint touchPoint) {
-        touchPointList.add(touchPoint);
-        touchPointAdapter.setTouchPointListList(touchPointList);
+        if(touchPointList != null) {
+            touchPointList.add(touchPoint);
+            touchPointAdapter.setTouchPointListList(touchPointList);
+        }
     }
 
 }

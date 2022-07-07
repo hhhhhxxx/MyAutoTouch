@@ -12,24 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:textColor="#fff"
-            android:background="#f10"
-            android:id="@+id/bt_stop"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:text="停止触控"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="50dp" />
 
         <Button
             android:layout_marginStart="1dp"
             android:textColor="#fff"
-            android:background="#666"
+            android:background="@drawable/shape_btn"
             android:id="@+id/bt_add"
+            android:layout_margin="3dp"
             android:textSize="15sp"
             android:text="添加触点"
             android:layout_width="0dp"
@@ -39,48 +28,45 @@
         <Button
             android:layout_marginStart="1dp"
             android:textColor="#fff"
-            android:background="#666"
+            android:background="@drawable/shape_btn"
+            android:layout_margin="3dp"
             android:id="@+id/bt_record"
             android:textSize="15sp"
-            android:text="录制模式"
+            android:text="录制"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="50dp" />
-
         <Button
             android:layout_marginStart="1dp"
             android:textColor="#fff"
-            android:background="#666"
-            android:id="@+id/bt_clear"
-            android:textSize="15sp"
-            android:text="清空列表"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="50dp" />
-
-
-        <Button
-            android:layout_marginStart="1dp"
-            android:textColor="#fff"
-            android:background="#666"
+            android:background="@drawable/shape_btn"
+            android:layout_margin="3dp"
             android:id="@+id/bt_exit"
             android:textSize="15sp"
             android:text="退出"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="50dp" />
-
     </LinearLayout>
 
-    <Button
-        android:layout_marginStart="1dp"
-        android:textColor="#fff"
-        android:background="#666"
-        android:id="@+id/bt_test"
-        android:textSize="15sp"
-        android:text="添加脚本"
-        android:layout_width="100dp"
-        android:layout_height="50dp" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_marginStart="1dp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/shape_btn2"
+            android:layout_margin="3dp"
+            android:id="@+id/bt_execute"
+            android:textSize="15sp"
+            android:text="运行刷熟"
+            android:layout_width="100dp"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+
 
 
     <TextView
@@ -89,10 +75,11 @@
         android:text="触控点列表"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_margin="3dp"
+        android:padding="3dp"
         android:id="@+id/rv"
-        android:background="#ccc"
+        android:background="@drawable/shape_radius"
         android:layout_width="match_parent"
         android:layout_height="300dp" />
 

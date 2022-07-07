@@ -1,6 +1,7 @@
 package com.hhhhhx.autotouch.dialog;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Window;
@@ -10,11 +11,13 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 
 import com.hhhhhx.autotouch.R;
+import com.hhhhhx.autotouch.activity.GBData;
 
 /**
  * 录制模式Dialog
  */
 public class RecordDialog extends BaseServiceDialog {
+    private static final String TAG = "RecordDialog";
     private Button cancelBtn;
 
     public RecordDialog(@NonNull Context context) {
@@ -58,10 +61,16 @@ public class RecordDialog extends BaseServiceDialog {
     }
 
     @Override
-    public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            Log.d("录制坐标", "x=" + ev.getRawX() + "y=" + ev.getRawY());
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            int x = (int) event.getRawX();
+            int y = (int) event.getRawY();
+            int color = GBData.getColor(x,y);
+            int r = Color.red(color);
+            int g = Color.green(color);
+            int b = Color.blue(color);
+            Log.d(TAG,  "x="+x+"-"+"y="+y+", rgb: ("+r+","+g+","+b+")"+" colorValue:"+color);
         }
-        return super.dispatchTouchEvent(ev);
+        return super.onTouchEvent(event);
     }
 }

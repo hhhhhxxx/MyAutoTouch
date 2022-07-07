@@ -60,7 +60,6 @@ public class GsonUtils {
         ArrayList<ArrayList<T>> list = new ArrayList<>();
 
         JsonArray array = new JsonParser().parse(json).getAsJsonArray();
-
         while (array.remove(null));
 
         for (final JsonElement elem : array) {

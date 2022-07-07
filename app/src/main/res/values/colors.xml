@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorTouchPointViewBg">#66000000</color>
+    <color name="switchBg">#2196F3</color>
+    <color name="switchPause">#F44336</color>
+    <color name="switchStop">#B1B1B1</color>
+    <color name="switchCon">#4CAF50</color>
+    <color name="switchText">#FFFFFF</color>
 </resources>

@@ -1,6 +1,7 @@
 package com.hhhhhx.autotouch.adapter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hhhhhx.autotouch.R;
 import com.hhhhhx.autotouch.bean.TouchPoint;
+import com.hhhhhx.autotouch.utils.SpUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TouchPointAdapter extends RecyclerView.Adapter<TouchPointAdapter.TouchPointHolder> implements View.OnClickListener {
+public class TouchPointAdapterShow extends RecyclerView.Adapter<TouchPointAdapterShow.TouchPointHolder> implements View.OnClickListener {
 
-    private List<List<TouchPoint>> tListList;
+    private static final String TAG = "TouchPointAdapterPlus";
+    private ArrayList<ArrayList<TouchPoint>> tListList;
     private OnItemClickListener onItemClickListener;
-//    private int touchPosition = -1;
 
-    public TouchPointAdapter() {
+    public TouchPointAdapterShow() {
 
     }
 
-    public void setTouchPointListList(List<List<TouchPoint>> tListList) {
+    public void setTouchPointListList(ArrayList<ArrayList<TouchPoint>> tListList) {
         this.tListList = tListList;
         notifyDataSetChanged();
     }
@@ -42,13 +45,11 @@ public class TouchPointAdapter extends RecyclerView.Adapter<TouchPointAdapter.To
     public static class TouchPointHolder extends RecyclerView.ViewHolder {
         // 成员
         TextView tvName, tvOffset;
-        Button btStop;
         // 构造方法
         public TouchPointHolder(@NonNull View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_name);
             tvOffset = itemView.findViewById(R.id.tv_offset);
-            btStop = itemView.findViewById(R.id.bt_stop);
         }
     }
 
@@ -59,11 +60,12 @@ public class TouchPointAdapter extends RecyclerView.Adapter<TouchPointAdapter.To
         holder.itemView.setTag(position);
         List<TouchPoint> tList = getItem(position);
 
-        TouchPoint touchPoint = tList.get(0);
-
-        holder.tvName.setText("第一个操作：" + touchPoint.getName());
-        holder.tvOffset.setText("间隔(" + touchPoint.getDelay() + "s)");
-//        holder.btStop.setVisibility(touchPosition == position ? View.VISIBLE : View.INVISIBLE);
+        if(tList.size()>0) {
+            TouchPoint touchPoint = tList.get(0);
+            holder.tvName.setText("第一个操作：" + touchPoint.getName());
+        } else{
+            holder.tvName.setText("第一个操作：空白");
+        }
     }
 
     @Override
@@ -71,7 +73,7 @@ public class TouchPointAdapter extends RecyclerView.Adapter<TouchPointAdapter.To
         return tListList == null ? 0 : tListList.size();
     }
 
-    public List<TouchPoint> getItem(int position) {
+    public ArrayList<TouchPoint> getItem(int position) {
         return tListList.get(position);
     }
 
@@ -79,7 +81,7 @@ public class TouchPointAdapter extends RecyclerView.Adapter<TouchPointAdapter.To
     public void onClick(View v) {
         if (onItemClickListener != null) {
             int postion = (int) v.getTag();
-            List<TouchPoint> tList = getItem(postion);
+            ArrayList<TouchPoint> tList = getItem(postion);
             onItemClickListener.onItemClick(v, postion, tList);
         }
     }
@@ -89,6 +91,7 @@ public class TouchPointAdapter extends RecyclerView.Adapter<TouchPointAdapter.To
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position,List<TouchPoint> tList);
+        void onItemClick(View view, int position,ArrayList<TouchPoint> tList);
     }
 }
+

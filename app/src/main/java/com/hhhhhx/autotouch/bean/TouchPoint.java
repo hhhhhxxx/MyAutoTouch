@@ -1,6 +1,6 @@
 package com.hhhhhx.autotouch.bean;
 
-public class TouchPoint {
+public class TouchPoint implements Task {
     private String name;
     private int x;
     private int y;
@@ -37,5 +37,11 @@ public class TouchPoint {
                 ", y=" + y +
                 ", delay=" + delay +
                 '}';
+    }
+
+
+    @Override
+    public int getTaskType() {
+        return TaskValue.NORMAL_TASK;
     }
 }

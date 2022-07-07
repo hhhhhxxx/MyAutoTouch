@@ -3,26 +3,32 @@
     android:layout_width="200dp"
     android:layout_height="50dp"
     android:orientation="horizontal"
-    android:gravity="center"
-    android:background="@color/colorTouchPointViewBg">
+    android:background="#0D9386"
+    android:gravity="center">
 
-<!--    <Button-->
-<!--        android:layout_width="100dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:text="暂停"/>-->
-<!--    <Button-->
-<!--        android:layout_width="100dp"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:text="开始"/>-->
 
-    <TextView
+    <Button
         android:id="@+id/switchBtn"
         android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:background="@color/colorAccent"/>
+        android:layout_height="40dp"
+        android:text="暂停"
+        android:textColor="#FFFFFF"
+        android:background="#8BC34A"
+        android:gravity="center" />
     <TextView
-        android:layout_width="150dp"
-        android:layout_height="30dp"
-        android:text="操作"
-        android:background="@color/colorPrimary"/>/>
+        android:id="@+id/tv_tip"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:text="拖动"
+        android:background="@color/switchText"/>
+
+    <Button
+        android:id="@+id/stopBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:text="结束"
+        android:background="#FFC107"
+        android:gravity="center" />
 </LinearLayout>

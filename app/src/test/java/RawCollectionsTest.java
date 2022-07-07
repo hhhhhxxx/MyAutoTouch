@@ -1,4 +1,6 @@
 import com.google.gson.Gson;
+import com.hhhhhx.autotouch.bean.ForTask;
+import com.hhhhhx.autotouch.bean.Task;
 import com.hhhhhx.autotouch.bean.TouchPoint;
 import com.hhhhhx.autotouch.utils.GsonUtils;
 
@@ -9,32 +11,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class RawCollectionsTest {
-    private static final String TAG = "main" ;
-
-    static class Event {
-        private String name;
-        private String source;
-        private Event(String name, String source) {
-            this.name = name;
-            this.source = source;
-        }
-        @Override
-        public String toString() {
-            return String.format("(name=%s, source=%s)", name, source);
-        }
-    }
-
     @Test
     public void testTest() {
-        ArrayList<String> list = new ArrayList<>();
+        Task task = new ForTask(3, null);
 
-        list.add(null);
-        list.add("123");
-        list.add(null);
+        ForTask task1 = (ForTask) task;
 
+        int repeatTime = task1.getRepeatTime();
 
-        list.removeIf(Objects::isNull);
-
-        System.out.println(GsonUtils.beanToJson(list));
+        System.out.println(repeatTime);
     }
 }

@@ -1,8 +1,7 @@
-package com.hhhhhx.autotouch.bean;
+package com.hhhhhx.autotouch.event;
 
+import com.hhhhhx.autotouch.bean.TouchPoint;
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
 
 public class ItemEvent {
     // 编辑触点用到

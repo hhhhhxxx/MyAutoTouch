@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
@@ -11,12 +12,22 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.hhhhhx.autotouch.R;
-import com.hhhhhx.autotouch.bean.TouchEvent;
+import com.hhhhhx.autotouch.bean.TimesTip;
+import com.hhhhhx.autotouch.event.TouchEvent;
+import com.hhhhhx.autotouch.event.TouchEventManager;
+import com.hhhhhx.autotouch.event.UIEvent;
 import com.hhhhhx.autotouch.utils.DensityUtil;
 import com.hhhhhx.autotouch.utils.ToastUtil;
 import com.hhhhhx.autotouch.utils.WindowUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Text;
 
 /**
  * 悬浮窗
@@ -29,15 +40,25 @@ public class SwitchFloatingService extends Service {
     private WindowManager.LayoutParams floatLayoutParams;
     private int flag = 1;
 
+    private Button switchBtn;
+    private Button stopBtn;
+    private TextView tv_tip;
+
+    private boolean isStart = false;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onCreate() {
         super.onCreate();
         mFloatingView = creatView(R.layout.layout_switch);
+
+        EventBus.getDefault().register(this);
+
         //设置WindowManger布局参数以及相关属性
         int dWidth = DensityUtil.dip2px(this, 200);
         int dHeight = DensityUtil.dip2px(this, 50);
@@ -46,10 +67,13 @@ public class SwitchFloatingService extends Service {
         //初始化位置
         floatLayoutParams.gravity = Gravity.TOP | Gravity.START;
         floatLayoutParams.x = 0;
-        floatLayoutParams.y = WindowUtils.getScreenHeight(this) - DensityUtil.dip2px(this, 200);
+        floatLayoutParams.y = WindowUtils.getScreenHeight(this) - DensityUtil.dip2px(this, 350);
         //获取WindowManager对象
         mWindowManager = WindowUtils.getWindowManager(this);
+
         addViewToWindow(mFloatingView, floatLayoutParams);
+
+        mFloatingView.setVisibility(View.GONE);
         //FloatingView的拖动事件
         mFloatingView.setClickable(true);
         mFloatingView.setOnTouchListener(new View.OnTouchListener() {
@@ -94,20 +118,61 @@ public class SwitchFloatingService extends Service {
             }
         });
 
-        View viewById = mFloatingView.findViewById(R.id.switchBtn);
-        viewById.setOnClickListener(view -> {
-            if(flag % 2 != 0 ) {
-                TouchEvent.postPauseAction();
-                Log.d(TAG, "onCreate: 点击了暂停");
+        switchBtn = mFloatingView.findViewById(R.id.switchBtn);
+        stopBtn = mFloatingView.findViewById(R.id.stopBtn);
+
+        tv_tip = mFloatingView.findViewById(R.id.tv_tip);
+
+
+        switchBtn.setOnClickListener(view -> {
+            if (flag % 2 != 0) {
+                pause();
             } else {
-                TouchEvent.postContinueAction();
-                Log.d(TAG, "onCreate: 点击了继续");
+                con();
             }
             flag++;
-            ToastUtil.show("点击了");
+        });
+
+        stopBtn.setOnClickListener(view -> {
+            TouchEvent.postStopAction();
+            UIEvent.postUIStopAction();
         });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReciverTouchEvent(UIEvent event) {
+        Log.d(TAG, "onReciverTouchEvent: 这这这这呵呵");
+        switch (event.getAction()) {
+            case UIEvent.UI_START:
+                start();
+                mFloatingView.setVisibility(View.VISIBLE);
+            case UIEvent.UI_UPDATE:
+                TimesTip timesTip = event.getTimesTip();
+                if(timesTip != null) {
+                    tv_tip.setText(timesTip.getSSTip());
+                    Log.d(TAG, "更新计时: " + timesTip.getSSTip());
+                }
+                break;
+            case UIEvent.UI_STOP:
+                mFloatingView.setVisibility(View.GONE);
+        }
+    }
+
+    public void start() {
+        flag = 1;
+        switchBtn.setText("暂停");
+        tv_tip.setText("拖动");
+    }
+    public void con() {
+        switchBtn.setText("暂停");
+        ToastUtil.show("脚本继续");
+        TouchEvent.postContinueAction();
+    }
+    public void pause() {
+        switchBtn.setText("继续");
+        ToastUtil.show("脚本暂停");
+        TouchEvent.postPauseAction();
+    }
 
     @Override
     public void onDestroy() {

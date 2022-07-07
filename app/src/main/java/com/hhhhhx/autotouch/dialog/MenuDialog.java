@@ -2,6 +2,7 @@ package com.hhhhhx.autotouch.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,9 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hhhhhx.autotouch.R;
-import com.hhhhhx.autotouch.manager.TouchEventManager;
-import com.hhhhhx.autotouch.adapter.TouchPointAdapterPlus;
-import com.hhhhhx.autotouch.bean.TouchEvent;
+import com.hhhhhx.autotouch.activity.HomeActivity;
+import com.hhhhhx.autotouch.activity.SetSSActivity;
+import com.hhhhhx.autotouch.adapter.TouchPointAdapterShow;
+import com.hhhhhx.autotouch.event.TouchEventManager;
+import com.hhhhhx.autotouch.event.TouchEvent;
 import com.hhhhhx.autotouch.bean.TouchPoint;
 import com.hhhhhx.autotouch.utils.DensityUtil;
 import com.hhhhhx.autotouch.utils.DialogUtils;
@@ -27,12 +30,11 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
 
     private static final String TAG = "菜单对话框";
 
-    private Button btStop;
     private RecyclerView rvPoints;
 
     private AddPointDialog addPointDialog;
     private Listener listener;
-    private TouchPointAdapterPlus touchPointAdapter;
+    private TouchPointAdapterShow touchPointAdapter;
     private RecordDialog recordDialog;
 
     public MenuDialog(@NonNull Context context) {
@@ -61,20 +63,18 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
         findViewById(R.id.bt_add).setOnClickListener(this);
         findViewById(R.id.bt_record).setOnClickListener(this);
         // 我自己加的
-        findViewById(R.id.bt_clear).setOnClickListener(this);
-        findViewById(R.id.bt_test).setOnClickListener(this);
+//        findViewById(R.id.bt_clear).setOnClickListener(this);
+//        findViewById(R.id.bt_test).setOnClickListener(this);
+        findViewById(R.id.bt_execute).setOnClickListener(this);
 
-        btStop = findViewById(R.id.bt_stop);
-        btStop.setOnClickListener(this);
         rvPoints = findViewById(R.id.rv);
-        touchPointAdapter = new TouchPointAdapterPlus();
-        touchPointAdapter.setOnItemClickListener(new TouchPointAdapterPlus.OnItemClickListener() {
+        touchPointAdapter = new TouchPointAdapterShow();
+        touchPointAdapter.setOnItemClickListener(new TouchPointAdapterShow.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, ArrayList<TouchPoint> tList) {
-                btStop.setVisibility(View.VISIBLE);
                 dismiss();
                 TouchEvent.postStartAction(tList);
-                ToastUtil.show("已开启触控点：" + tList.get(0).getName());
+                ToastUtil.show("已开启触控点：");
             }
         });
         rvPoints.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -121,7 +121,7 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
                 dismiss();
                 if (listener != null) {
                     listener.onFloatWindowAttachChange(false);
-                    if (recordDialog ==null) {
+                    if (recordDialog == null) {
                         recordDialog = new RecordDialog(getContext());
                         recordDialog.setOnDismissListener(new OnDismissListener() {
                             @Override
@@ -130,14 +130,9 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
                                 MenuDialog.this.show();
                             }
                         });
-                        recordDialog.show();
                     }
+                    recordDialog.show();
                 }
-                break;
-            case R.id.bt_stop:
-                btStop.setVisibility(View.GONE);
-                TouchEvent.postStopAction();
-                ToastUtil.show("已停止触控");
                 break;
             case R.id.bt_exit:
                 TouchEvent.postStopAction();
@@ -145,16 +140,10 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
                     listener.onExitService();
                 }
                 break;
-            case R.id.bt_clear:
-                SpUtils.clear(getContext());
-                if (touchPointAdapter != null) {
-                    touchPointAdapter.setTouchPointListList(null);
-                }
-                ToastUtil.show("已清除触控存储");
-                break;
-            case R.id.bt_test:
-
-
+            case R.id.bt_execute:
+                MenuDialog.this.dismiss();
+                TouchEvent.postStartSSAction();
+                ToastUtil.show("已开启刷熟：");
                 break;
 
         }
@@ -167,6 +156,7 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
     public interface Listener {
         /**
          * 悬浮窗显示状态变化
+         *
          * @param attach
          */
         void onFloatWindowAttachChange(boolean attach);

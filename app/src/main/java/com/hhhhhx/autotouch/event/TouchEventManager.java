@@ -1,7 +1,4 @@
-package com.hhhhhx.autotouch.manager;
-
-
-import com.hhhhhx.autotouch.bean.TouchEvent;
+package com.hhhhhx.autotouch.event;
 
 
 public class TouchEventManager {

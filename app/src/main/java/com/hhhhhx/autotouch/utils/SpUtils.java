@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.hhhhhx.autotouch.bean.BrushSetting;
 import com.hhhhhx.autotouch.bean.TouchPoint;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class SpUtils {
      */
     private static final String FILE_NAME = "share_date";
     private static final String KEY_TOUCH_LIST = "touch_list";
-
+    private static final String KEY_BRUSH_SETTING = "brush_setting";
 
     /**
      * 保存数据的方法，我们需要拿到保存数据的具体类型，然后根据类型调用不同的保存方法
@@ -32,7 +33,6 @@ public class SpUtils {
      * @param object
      */
     public static void setParam(Context context, String key, Object object) {
-
         String type = object.getClass().getSimpleName();
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -139,7 +139,6 @@ public class SpUtils {
         }
         ArrayList<ArrayList<TouchPoint>> arrayLists = GsonUtils.jsonToListList(string, TouchPoint.class);
         arrayLists.removeIf(Objects::isNull);
-
         return arrayLists;
     }
 
@@ -164,6 +163,20 @@ public class SpUtils {
             return false;
         }
     }
+    // ------------------------------------------
 
-
+    // 刷熟设置
+    public static BrushSetting getBrushSetting(Context context) {
+        String string = (String) getParam(context, KEY_BRUSH_SETTING, "");
+        if (TextUtils.isEmpty(string)) {
+            BrushSetting brushSetting = new BrushSetting();
+            setBrushSetting(context,brushSetting);
+            return brushSetting;
+        }
+        return GsonUtils.jsonToBean(string, BrushSetting.class);
+    }
+    public static void setBrushSetting(Context context, BrushSetting brushSetting) {
+        String string = GsonUtils.beanToJson(brushSetting);
+        setParam(context, KEY_BRUSH_SETTING, string);
+    }
 }
