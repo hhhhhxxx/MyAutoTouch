@@ -16,11 +16,22 @@ public class TouchEvent {
 
     public static final int ACTION_START_SS = 5;
 
-    public static final int ACTION_UPDATE_UI = 10086;
+    public static final int ACTION_TAP = 123;
+
 
     private int action;
+
+    public TouchPoint getTouchPoint() {
+        return touchPoint;
+    }
+
     private List<TouchPoint> tList;
-    private TimesTip timesTip;
+    private TouchPoint touchPoint;
+
+    public TouchEvent(int action, TouchPoint touchPoint) {
+        this.action = action;
+        this.touchPoint = touchPoint;
+    }
 
     private TouchEvent(int action) {
         this.action = action;
@@ -29,20 +40,12 @@ public class TouchEvent {
         this.action = action;
         this.tList = tList;
     }
-    public TouchEvent(int action, TimesTip timesTip) {
-        this.action = action;
-        this.timesTip = timesTip;
-    }
 
     public void setAction(int action) {
         this.action = action;
     }
     public int getAction() {
         return action;
-    }
-
-    public TimesTip getTimesTip() {
-        return timesTip;
     }
 
     public List<TouchPoint> getTouchPointList() {
@@ -70,8 +73,8 @@ public class TouchEvent {
         postAction(new TouchEvent(ACTION_START_SS));
     }
 
-    public static void postUpdateUIAction(TimesTip timesTip) {
-        postAction(new TouchEvent(ACTION_UPDATE_UI,timesTip));
+    public static void postTapAction(TouchPoint touchPoint) {
+        postAction(new TouchEvent(ACTION_TAP,touchPoint));
     }
 
     private static void postAction(TouchEvent touchEvent) {

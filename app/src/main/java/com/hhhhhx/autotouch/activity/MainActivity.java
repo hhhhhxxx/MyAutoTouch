@@ -182,8 +182,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService(new Intent(this,FloatingService.class));
         stopService(new Intent(this,AutoTouchService.class));
+        stopService(new Intent(this,FloatingService.class));
         stopService(new Intent(this, SwitchFloatingService.class));
+
+        GBData.close();
+        mMediaProjection.stop();
     }
 }

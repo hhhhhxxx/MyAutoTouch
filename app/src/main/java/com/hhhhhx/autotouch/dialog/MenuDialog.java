@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hhhhhx.autotouch.R;
 import com.hhhhhx.autotouch.activity.HomeActivity;
 import com.hhhhhx.autotouch.activity.SetSSActivity;
-import com.hhhhhx.autotouch.adapter.TouchPointAdapterShow;
 import com.hhhhhx.autotouch.event.TouchEventManager;
 import com.hhhhhx.autotouch.event.TouchEvent;
 import com.hhhhhx.autotouch.bean.TouchPoint;
@@ -30,11 +29,8 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
 
     private static final String TAG = "菜单对话框";
 
-    private RecyclerView rvPoints;
 
-    private AddPointDialog addPointDialog;
     private Listener listener;
-    private TouchPointAdapterShow touchPointAdapter;
     private RecordDialog recordDialog;
 
     public MenuDialog(@NonNull Context context) {
@@ -60,31 +56,16 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
     protected void onInited() {
         setCanceledOnTouchOutside(true);
         findViewById(R.id.bt_exit).setOnClickListener(this);
-        findViewById(R.id.bt_add).setOnClickListener(this);
         findViewById(R.id.bt_record).setOnClickListener(this);
+
         // 我自己加的
-//        findViewById(R.id.bt_clear).setOnClickListener(this);
-//        findViewById(R.id.bt_test).setOnClickListener(this);
         findViewById(R.id.bt_execute).setOnClickListener(this);
 
-        rvPoints = findViewById(R.id.rv);
-        touchPointAdapter = new TouchPointAdapterShow();
-        touchPointAdapter.setOnItemClickListener(new TouchPointAdapterShow.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position, ArrayList<TouchPoint> tList) {
-                dismiss();
-                TouchEvent.postStartAction(tList);
-                ToastUtil.show("已开启触控点：");
-            }
-        });
-        rvPoints.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvPoints.setAdapter(touchPointAdapter);
+
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (TouchEventManager.getInstance().isPaused()) {
-                    TouchEvent.postContinueAction();
-                }
+                TouchEvent.postContinueAction();
             }
         });
     }
@@ -92,31 +73,13 @@ public class MenuDialog extends BaseServiceDialog implements View.OnClickListene
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
         //如果正在触控，则暂停
         TouchEvent.postPauseAction();
-        if (touchPointAdapter != null) {
-            ArrayList<ArrayList<TouchPoint>> tListList = SpUtils.getTouchPointsListList(getContext());
-//            Log.d(TAG, GsonUtils.beanToJson(touchPoints));
-            touchPointAdapter.setTouchPointListList(tListList);
-        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.bt_add:
-                DialogUtils.dismiss(addPointDialog);
-                addPointDialog = new AddPointDialog(getContext());
-                addPointDialog.setOnDismissListener(new OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-//                        MenuDialog.this.show();
-                    }
-                });
-                addPointDialog.show();
-                dismiss();
-                break;
             case R.id.bt_record:
                 dismiss();
                 if (listener != null) {

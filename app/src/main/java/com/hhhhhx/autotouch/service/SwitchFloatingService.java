@@ -15,12 +15,16 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hhhhhx.autotouch.Data;
 import com.hhhhhx.autotouch.R;
+import com.hhhhhx.autotouch.bean.BrushSetting;
+import com.hhhhhx.autotouch.bean.Task;
 import com.hhhhhx.autotouch.bean.TimesTip;
 import com.hhhhhx.autotouch.event.TouchEvent;
 import com.hhhhhx.autotouch.event.TouchEventManager;
 import com.hhhhhx.autotouch.event.UIEvent;
 import com.hhhhhx.autotouch.utils.DensityUtil;
+import com.hhhhhx.autotouch.utils.SpUtils;
 import com.hhhhhx.autotouch.utils.ToastUtil;
 import com.hhhhhx.autotouch.utils.WindowUtils;
 
@@ -28,6 +32,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 /**
  * 悬浮窗
@@ -38,13 +44,14 @@ public class SwitchFloatingService extends Service {
     private WindowManager mWindowManager;
     private View mFloatingView;
     private WindowManager.LayoutParams floatLayoutParams;
-    private int flag = 1;
 
     private Button switchBtn;
     private Button stopBtn;
     private TextView tv_tip;
+    private int flag = 1;
 
-    private boolean isStart = false;
+    private Data ssData;
+    private SSThread ssThread;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -120,64 +127,108 @@ public class SwitchFloatingService extends Service {
 
         switchBtn = mFloatingView.findViewById(R.id.switchBtn);
         stopBtn = mFloatingView.findViewById(R.id.stopBtn);
-
         tv_tip = mFloatingView.findViewById(R.id.tv_tip);
 
 
         switchBtn.setOnClickListener(view -> {
             if (flag % 2 != 0) {
-                pause();
+                pauseTask();
             } else {
-                con();
+                conTask();
             }
             flag++;
         });
 
         stopBtn.setOnClickListener(view -> {
             TouchEvent.postStopAction();
-            UIEvent.postUIStopAction();
+            stopTask();
         });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReciverTouchEvent(UIEvent event) {
-        Log.d(TAG, "onReciverTouchEvent: 这这这这呵呵");
+    public void onReciverTOuchEvent(TouchEvent event) {
+        Log.d(TAG, "控制中心: " + event.toString());
+
         switch (event.getAction()) {
-            case UIEvent.UI_START:
-                start();
-                mFloatingView.setVisibility(View.VISIBLE);
+            case TouchEvent.ACTION_START_SS:
+                startTask();
+                break;
+            case TouchEvent.ACTION_CONTINUE:
+                conTask();
+                break;
+            case TouchEvent.ACTION_PAUSE:
+                pauseTask();
+                break;
+            case TouchEvent.ACTION_STOP:
+                stopTask();
+                break;
+        }
+    }
+
+    public void startTask() {
+        mFloatingView.setVisibility(View.VISIBLE);
+        flag = 1;
+        switchBtn.setText("暂停");
+        tv_tip.setText("拖动");
+        onAutoClick();
+    }
+    public void conTask() {
+        if (ssThread != null) {
+            ssThread.onThreadResume();
+        }
+        switchBtn.setText("暂停");
+        ToastUtil.show("脚本继续");
+    }
+    public void pauseTask() {
+        if (ssThread != null) {
+            ssThread.onThreadPause();
+        }
+        switchBtn.setText("继续");
+        ToastUtil.show("脚本暂停");
+    }
+    public void stopTask() {
+        ssThread.closeThread();
+        mFloatingView.setVisibility(View.GONE);
+    }
+
+    /**
+     * 执行自动点击
+     */
+    private void onAutoClick() {
+        // 准备数据
+        BrushSetting brushSetting = SpUtils.getBrushSetting(SwitchFloatingService.this);
+        ssData = new Data(brushSetting);
+
+
+        ArrayList<Task> t1 = ssData.getAllTask();
+        ArrayList<Task> t2 = ssData.getTreatTask();
+
+        ssThread = new SSThread(t1, t2,brushSetting);
+        ssThread.start();
+        UIEvent.postUIStartAction();
+    }
+
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReciverUIEvent(UIEvent event) {
+        switch (event.getAction()) {
             case UIEvent.UI_UPDATE:
                 TimesTip timesTip = event.getTimesTip();
                 if(timesTip != null) {
                     tv_tip.setText(timesTip.getSSTip());
-                    Log.d(TAG, "更新计时: " + timesTip.getSSTip());
                 }
                 break;
-            case UIEvent.UI_STOP:
-                mFloatingView.setVisibility(View.GONE);
         }
     }
 
-    public void start() {
-        flag = 1;
-        switchBtn.setText("暂停");
-        tv_tip.setText("拖动");
-    }
-    public void con() {
-        switchBtn.setText("暂停");
-        ToastUtil.show("脚本继续");
-        TouchEvent.postContinueAction();
-    }
-    public void pause() {
-        switchBtn.setText("继续");
-        ToastUtil.show("脚本暂停");
-        TouchEvent.postPauseAction();
-    }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         removeViewFromWinddow(mFloatingView);
+        EventBus.getDefault().unregister(this);
     }
 
     private void hideDialog(Dialog dialog) {

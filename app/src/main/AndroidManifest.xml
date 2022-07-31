@@ -33,7 +33,6 @@
         </activity>
 
         <activity android:name=".activity.HomeActivity" android:launchMode="singleTop"></activity>
-        <activity android:name=".activity.ItemActivity" android:launchMode="singleTask"></activity>
         <activity android:name=".activity.SetSSActivity" android:launchMode="singleTask"></activity>
         
         <service

@@ -17,6 +17,8 @@ import com.hhhhhx.autotouch.dialog.MenuDialog;
 import com.hhhhhx.autotouch.utils.DensityUtil;
 import com.hhhhhx.autotouch.utils.WindowUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * 悬浮窗
  */
@@ -100,11 +102,11 @@ public class FloatingService extends Service {
                 @Override
                 public void onFloatWindowAttachChange(boolean attach) {
                     if (attach) {
-//                        addViewToWindow(mFloatingView, floatLayoutParams);
-                    } else {
                         // 暂停
+                        //TouchEvent.postPauseAction();
+                    } else {
+                        // 继续
                         TouchEvent.postContinueAction();
-//                        removeViewFromWinddow(mFloatingView);
                     }
                 }
 

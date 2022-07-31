@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hhhhhx.autotouch.Data;
 import com.hhhhhx.autotouch.R;
-import com.hhhhhx.autotouch.adapter.TouchPointAdapterPlus;
 import com.hhhhhx.autotouch.bean.BrushSetting;
 import com.hhhhhx.autotouch.event.TouchEvent;
 import com.hhhhhx.autotouch.bean.TouchPoint;

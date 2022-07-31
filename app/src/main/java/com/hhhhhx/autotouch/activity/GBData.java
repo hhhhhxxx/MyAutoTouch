@@ -6,9 +6,7 @@ import android.media.ImageReader;
 import android.util.Log;
 
 import com.hhhhhx.autotouch.bean.Color;
-
 import java.nio.ByteBuffer;
-
 import me.jessyan.autosize.utils.LogUtils;
 
 //根据坐标获取颜色
@@ -50,11 +48,13 @@ public class GBData {
     }
 
     public static boolean isSameColor(Color color) {
-        long st = System.currentTimeMillis();
         int color1 = getColor(color.getX(), color.getY());
-        long et = System.currentTimeMillis();
         int color2 = color.getColor();
-        Log.d(TAG, "----颜色比较: ("+color2+" : "+color1+")");
+        Log.d(TAG, "----颜色比较: ("+color2+" -> "+color1+")");
         return color1 == color2;
+    }
+
+    public static void close() {
+        reader.close();
     }
 }
